@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import edu.temple.countdown.ui.theme.CountdownTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,25 +47,18 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Countdown(modifier: Modifier = Modifier) {
-
-    var counter by rememberSaveable() {mutableIntStateOf(100)}
-    val scope = rememberCoroutineScope()
+    val countdownVM : CountdownVM = viewModel()
 
     Column(Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center) {
         Text(
-            text = counter.toString(),
+            text = countdownVM.counter.toString(),
             modifier = modifier,
             fontSize = 92.sp
         )
         Button({
-            scope.launch {
-                repeat(100) {
-                    counter = 100-it
-                    delay(1000.milliseconds)
-                }
-            }
+            countdownVM.startCountdown()
         }) {
             Image(painterResource(android.R.drawable.ic_media_play), "Start")
         }
